@@ -665,7 +665,7 @@
 <script>
 
   /* ==========================================================
-   *  URL DO APPS SCRIPT CORRIGIDA
+   *  URL DA IMPLANTACAO DO APPS SCRIPT
    * ========================================================== */
 
   const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxtLiJr-hRs0qx08elsppUK3qhdVIE2F6ZKGFveRZtwPA8yQ4v8zRFBu-P-1HeFfxhI3w/exec";
@@ -783,62 +783,46 @@
 
 
   /*
-   * Manda UMA foto para o Apps Script.
-   *
-   * O content-type e "text/plain" de proposito: assim o
-   * navegador nao faz a chamada de verificacao (preflight),
-   * que o Apps Script nao responde.
+   * Manda UMA foto para o Apps Script usando x-www-form-urlencoded
+   * para evitar travamentos de CORS/redirecionamento do navegador no GitHub Pages.
    */
 
   async function enviarUma(nome, dataUrl, nomeArquivo) {
-  // Prepara os dados codificados na URL para evitar bloqueios de CORS no redirecionamento do Google
-  const payload = JSON.stringify({
-    nome: nome,
-    dataUrl: dataUrl,
-    nomeArquivo: nomeArquivo
-  });
 
-  try {
+    const corpoFormulario = new URLSearchParams();
+    corpoFormulario.append("nome", nome);
+    corpoFormulario.append("dataUrl", dataUrl);
+    corpoFormulario.append("nomeArquivo", nomeArquivo);
+
     const resposta = await fetch(URL_SCRIPT, {
+
       method: "POST",
+
       headers: {
-        "Content-Type": "text/plain;charset=utf-8"
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
       },
-      body: payload,
-      redirect: "follow"
+
+      body: corpoFormulario.toString()
+
     });
 
+
     if (!resposta.ok) {
-      throw new Error("Servidor respondeu " + resposta.status);
+      throw new Error("Servidor respondeu " + resposta.status + ".");
     }
 
+
     const resultado = await resposta.json();
+
 
     if (!resultado.sucesso) {
       throw new Error(resultado.erro || "Falha no envio.");
     }
 
+
     return resultado;
-  } catch (erro) {
-    // Tratamento secundário caso o redirecionamento CORS bloqueie a leitura da resposta
-    if (erro.name === "TypeError" || erro.message.includes("Failed to fetch")) {
-      await fetch(URL_SCRIPT, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: payload
-      });
 
-      // Em modo no-cors o envio é concluído com sucesso no servidor do Google,
-      // mesmo sem o navegador conseguir ler o JSON retornado.
-      return { sucesso: true };
-    }
-
-    throw erro;
   }
-}
 
 
   /*
