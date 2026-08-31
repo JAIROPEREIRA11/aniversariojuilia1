@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <title>Compartilhe suas fotos</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      margin: 0;
+      padding: 15px;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          135deg,
+          #fce4ec 0%,
+          #fff 50%,
+          #f3e5f5 100%
+        );
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      color: #333;
+    }
+
+    .container {
+
+      width: 100%;
+      max-width: 480px;
+
+      background: #ffffff;
+
+      border-radius: 26px;
+
+      padding: 30px 22px;
+
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.12);
+
+      text-align: center;
+
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decoração */
+
+    .decoracao {
+      position: absolute;
+      font-size: 22px;
+      opacity: 0.7;
+    }
+
+    .d1 {
+      top: 15px;
+      left: 18px;
+    }
+
+    .d2 {
+      top: 18px;
+      right: 20px;
+    }
+
+    .d3 {
+      bottom: 15px;
+      left: 20px;
+    }
+
+    .d4 {
+      bottom: 15px;
+      right: 20px;
+    }
+
+    .camera {
+      font-size: 58px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+
+      margin: 0 0 10px 0;
+
+      font-size: 27px;
+      line-height: 1.2;
+
+      font-weight: 700;
+
+      color: #333;
+    }
+
+    .subtitulo {
+
+      font-size: 16px;
+
+      line-height: 1.5;
+
+      color: #777;
+
+      margin-bottom: 28px;
+    }
+
+    .campo {
+
+      text-align: left;
+
+      margin-bottom: 20px;
+    }
+
+    .campo label {
+
+      display: block;
+
+      font-size: 16px;
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+
+      color: #444;
+    }
+
+    input[type="text"] {
+
+      width: 100%;
+
+      height: 54px;
+
+      padding: 0 15px;
+
+      border: 1.5px solid #ddd;
+
+      border-radius: 13px;
+
+      background: #fff;
+
+      font-size: 17px;
+
+      color: #333;
+
+      outline: none;
+
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="text"]:focus {
+
+      border-color: #999;
+
+      box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Área de upload */
+
+    .upload-label {
+
+      display: block;
+
+      width: 100%;
+
+      border: 2px dashed #cfcfcf;
+
+      border-radius: 18px;
+
+      padding: 25px 15px;
+
+      background: #fafafa;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .upload-label:active {
+
+      transform: scale(0.98);
+
+      background: #f4f4f4;
+    }
+
+    .upload-icon {
+
+      font-size: 42px;
+
+      line-height: 1;
+
+      margin-bottom: 10px;
+    }
+
+    .upload-title {
+
+      font-size: 17px;
+
+      font-weight: 700;
+
+      color: #444;
+
+      margin-bottom: 6px;
+    }
+
+    .upload-description {
+
+      font-size: 14px;
+
+      color: #888;
+
+      line-height: 1.4;
+    }
+
+    .contador {
+
+      margin-top: 12px;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      color: #666;
+    }
+
+    #fotos {
+
+      display: none;
+    }
+
+    /* botão */
+
+    button {
+
+      width: 100%;
+
+      min-height: 56px;
+
+      margin-top: 4px;
+
+      border: none;
+
+      border-radius: 15px;
+
+      background: #333;
+
+      color: #fff;
+
+      font-size: 18px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      padding: 14px 18px;
+
+      -webkit-appearance: none;
+      appearance: none;
+
+      transition: 0.2s;
+    }
+
+    button:active {
+
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+
+      opacity: 0.55;
+
+      cursor: not-allowed;
+
+      transform: none;
+    }
+
+    /* progresso */
+
+    .progresso-container {
+
+      display: none;
+
+      margin-top: 18px;
+
+      text-align: left;
+    }
+
+    .progresso-texto {
+
+      font-size: 14px;
+
+      color: #666;
+
+      margin-bottom: 7px;
+
+      text-align: center;
+    }
+
+    .progresso-fundo {
+
+      width: 100%;
+
+      height: 8px;
+
+      background: #eee;
+
+      border-radius: 10px;
+
+      overflow: hidden;
+    }
+
+    .progresso-barra {
+
+      width: 0%;
+
+      height: 100%;
+
+      background: #333;
+
+      border-radius: 10px;
+
+      transition: width 0.3s ease;
+    }
+
+    /* mensagem */
+
+    .status {
+
+      margin-top: 18px;
+
+      padding: 12px;
+
+      border-radius: 12px;
+
+      font-size: 15px;
+
+      line-height: 1.5;
+
+      white-space: pre-line;
+
+      display: none;
+    }
+
+    .status.sucesso {
+
+      display: block;
+
+      background: #e8f5e9;
+
+      color: #2e7d32;
+    }
+
+    .status.erro {
+
+      display: block;
+
+      background: #ffebee;
+
+      color: #c62828;
+    }
+
+    .rodape {
+
+      margin-top: 22px;
+
+      font-size: 12px;
+
+      color: #aaa;
+
+      line-height: 1.4;
+    }
+
+    /* celular */
+
+    @media (max-width: 600px) {
+
+      body {
+
+        padding: 10px;
+
+        align-items: flex-start;
+      }
+
+      .container {
+
+        width: 100%;
+
+        max-width: none;
+
+        min-height: calc(100vh - 20px);
+        min-height: calc(100dvh - 20px);
+
+        border-radius: 22px;
+
+        padding:
+          28px
+          18px
+          24px
+          18px;
+      }
+
+      h1 {
+
+        font-size: 25px;
+      }
+
+      .subtitulo {
+
+        font-size: 15px;
+      }
+
+      .camera {
+
+        font-size: 55px;
+      }
+
+      input[type="text"] {
+
+        height: 56px;
+
+        font-size: 18px;
+      }
+
+      .upload-label {
+
+        padding: 28px 15px;
+      }
+
+      button {
+
+        min-height: 58px;
+
+        font-size: 18px;
+      }
+    }
+
+    /* telas muito pequenas */
+
+    @media (max-width: 360px) {
+
+      .container {
+
+        padding: 24px 15px;
+      }
+
+      h1 {
+
+        font-size: 23px;
+      }
+
+      .subtitulo {
+
+        font-size: 14px;
+      }
+
+      .upload-label {
+
+        padding: 22px 10px;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <div class="container">
+
+    <div class="decoracao d1">❤️</div>
+    <div class="decoracao d2">✨</div>
+    <div class="decoracao d3">✨</div>
+    <div class="decoracao d4">❤️</div>
+
+
+    <div class="camera">
+      📸
+    </div>
+
+
+    <h1>
+      Compartilhe suas fotos!
+    </h1>
+
+
+    <div class="subtitulo">
+
+      Sua presença tornou esse momento
+      ainda mais especial. ❤️
+
+      <br><br>
+
+      Compartilhe as fotos que você registrou
+      durante a festa!
+
+    </div>
+
+
+    <!-- NOME -->
+
+    <div class="campo">
+
+      <label for="nome">
+        👤 Seu nome
+      </label>
+
+      <input
+        type="text"
+        id="nome"
+        placeholder="Digite seu nome"
+        autocomplete="name"
+        autocapitalize="words"
+        spellcheck="false"
+      >
+
+    </div>
+
+
+    <!-- FOTOS -->
+
+    <div class="campo">
+
+      <label>
+        📷 Suas fotos
+      </label>
+
+
+      <label
+        class="upload-label"
+        for="fotos"
+      >
+
+        <div class="upload-icon">
+          📷
+        </div>
+
+
+        <div class="upload-title">
+          Toque aqui para escolher as fotos
+        </div>
+
+
+        <div class="upload-description">
+          Você pode selecionar várias fotos
+          de uma vez.
+        </div>
+
+
+        <div
+          class="contador"
+          id="contador"
+        >
+          Nenhuma foto selecionada
+        </div>
+
+      </label>
+
+
+      <input
+        type="file"
+        id="fotos"
+        accept="image/*"
+        multiple
+      >
+
+    </div>
+
+
+    <!-- BOTÃO -->
+
+    <button
+      id="enviar"
+      type="button"
+    >
+
+      ❤️ ENVIAR FOTOS
+
+    </button>
+
+
+    <!-- PROGRESSO -->
+
+    <div
+      class="progresso-container"
+      id="progressoContainer"
+    >
+
+      <div
+        class="progresso-texto"
+        id="progressoTexto"
+      >
+        Preparando fotos...
+      </div>
+
+
+      <div class="progresso-fundo">
+
+        <div
+          class="progresso-barra"
+          id="progressoBarra"
+        ></div>
+
+      </div>
+
+    </div>
+
+
+    <!-- STATUS -->
+
+    <div
+      id="status"
+      class="status"
+    ></div>
+
+
+    <div class="rodape">
+
+      Obrigado por compartilhar
+      esse momento! ❤️
+
+    </div>
+
+  </div>
+
+
+<script>
+
+  /* ==========================================================
+   *
+   *  COLE AQUI A URL DA SUA IMPLANTACAO DO APPS SCRIPT
+   *  (a que termina em /exec)
+   *
+   * ========================================================== */
+
+  const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxtLiJr-hRs0qx08elsppUK3qhdVIE2F6ZKGFveRZtwPA8yQ4v8zRFBu-P-1HeFfxhI3w/exec";
+
+
+  /*
+   * Configuracoes da compressao
+   */
+
+  const MAX_LADO = 1600;
+  const QUALIDADE = 0.8;
+
+
+  let arquivosSelecionados = [];
+
+  let enviando = false;
+
+
+  /*
+   * Selecao das fotos
+   */
+
+  document
+    .getElementById("fotos")
+    .addEventListener("change", function (event) {
+
+      arquivosSelecionados =
+        Array.from(event.target.files);
+
+      const contador =
+        document.getElementById("contador");
+
+
+      if (arquivosSelecionados.length === 0) {
+
+        contador.innerText =
+          "Nenhuma foto selecionada";
+
+      } else {
+
+        contador.innerText =
+          arquivosSelecionados.length +
+          (
+            arquivosSelecionados.length === 1
+              ? " foto selecionada"
+              : " fotos selecionadas"
+          );
+
+      }
+
+    });
+
+
+  document
+    .getElementById("enviar")
+    .addEventListener("click", enviar);
+
+
+  /*
+   * Reduz a foto no proprio celular antes de enviar
+   */
+
+  function comprimir(arquivo) {
+
+    return new Promise(function (resolve, reject) {
+
+      const url = URL.createObjectURL(arquivo);
+
+      const img = new Image();
+
+
+      img.onload = function () {
+
+        const escala =
+          Math.min(
+            1,
+            MAX_LADO / Math.max(img.width, img.height)
+          );
+
+        const canvas =
+          document.createElement("canvas");
+
+        canvas.width = Math.round(img.width * escala);
+        canvas.height = Math.round(img.height * escala);
+
+        canvas
+          .getContext("2d")
+          .drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        URL.revokeObjectURL(url);
+
+        resolve(
+          canvas.toDataURL("image/jpeg", QUALIDADE)
+        );
+
+      };
+
+
+      img.onerror = function () {
+
+        URL.revokeObjectURL(url);
+
+        reject(
+          new Error("Nao foi possivel ler uma das fotos.")
+        );
+
+      };
+
+
+      img.src = url;
+
+    });
+
+  }
+
+
+  /*
+   * Manda UMA foto para o Apps Script.
+   *
+   * O content-type e "text/plain" de proposito: assim o
+   * navegador nao faz a chamada de verificacao (preflight),
+   * que o Apps Script nao responde.
+   */
+
+  async function enviarUma(nome, dataUrl, nomeArquivo) {
+
+    const resposta = await fetch(URL_SCRIPT, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+
+      body: JSON.stringify({
+        nome: nome,
+        dataUrl: dataUrl,
+        nomeArquivo: nomeArquivo
+      })
+
+    });
+
+
+    if (!resposta.ok) {
+      throw new Error("Servidor respondeu " + resposta.status + ".");
+    }
+
+
+    const resultado = await resposta.json();
+
+
+    if (!resultado.sucesso) {
+      throw new Error(resultado.erro || "Falha no envio.");
+    }
+
+
+    return resultado;
+
+  }
+
+
+  /*
+   * Envio principal
+   */
+
+  async function enviar() {
+
+    if (enviando) {
+      return;
+    }
+
+
+    const nome =
+      document
+        .getElementById("nome")
+        .value
+        .trim();
+
+
+    const botao =
+      document.getElementById("enviar");
+
+
+    if (URL_SCRIPT.indexOf("exec") === -1
+        || URL_SCRIPT.indexOf("COLE_AQUI") === 0) {
+
+      mostrarErro(
+        "A pagina ainda nao foi configurada.\n\n" +
+        "Falta colar a URL do Apps Script no codigo."
+      );
+
+      return;
+    }
+
+
+    if (!nome) {
+
+      mostrarErro("Por favor, informe seu nome.");
+
+      document.getElementById("nome").focus();
+
+      return;
+    }
+
+
+    if (arquivosSelecionados.length === 0) {
+
+      mostrarErro("Selecione pelo menos uma foto.");
+
+      return;
+    }
+
+
+    enviando = true;
+
+    botao.disabled = true;
+
+    botao.innerText = "⏳ ENVIANDO...";
+
+    esconderStatus();
+
+    mostrarProgresso();
+
+
+    const total = arquivosSelecionados.length;
+
+    let enviadas = 0;
+
+
+    for (let i = 0; i < total; i++) {
+
+      try {
+
+        atualizarProgresso(
+          Math.round((i / total) * 100),
+          "Enviando foto " + (i + 1) + " de " + total + "..."
+        );
+
+
+        const dataUrl =
+          await comprimir(arquivosSelecionados[i]);
+
+
+        await enviarUma(
+          nome,
+          dataUrl,
+          arquivosSelecionados[i].name
+        );
+
+
+        enviadas++;
+
+      } catch (erro) {
+
+        mostrarErro(
+          "Nao foi possivel enviar a foto " +
+          (i + 1) + " de " + total + ".\n\n" +
+          (erro && erro.message
+            ? erro.message
+            : "Verifique a internet e tente novamente.") +
+          (enviadas > 0
+            ? "\n\n" + enviadas + " ja foram salvas."
+            : "")
+        );
+
+        finalizar();
+
+        return;
+      }
+
+    }
+
+
+    atualizarProgresso(100, "Fotos enviadas!");
+
+
+    mostrarSucesso(
+
+      "🎉 Tudo certo, " + nome + "!\n\n" +
+
+      enviadas +
+      (
+        enviadas === 1
+          ? " foto foi enviada"
+          : " fotos foram enviadas"
+      ) +
+
+      " com sucesso. ❤️"
+
+    );
+
+
+    document.getElementById("nome").value = "";
+
+    document.getElementById("fotos").value = "";
+
+    document.getElementById("contador").innerText =
+      "Nenhuma foto selecionada";
+
+    arquivosSelecionados = [];
+
+
+    finalizar();
+
+  }
+
+
+  /*
+   * Progresso
+   */
+
+  function mostrarProgresso() {
+
+    document
+      .getElementById("progressoContainer")
+      .style.display = "block";
+
+  }
+
+
+  function atualizarProgresso(porcentagem, texto) {
+
+    document
+      .getElementById("progressoBarra")
+      .style.width = porcentagem + "%";
+
+    document
+      .getElementById("progressoTexto")
+      .innerText = texto;
+
+  }
+
+
+  /*
+   * Mensagens
+   */
+
+  function mostrarSucesso(mensagem) {
+
+    const status = document.getElementById("status");
+
+    status.className = "status sucesso";
+
+    status.innerText = mensagem;
+
+  }
+
+
+  function mostrarErro(mensagem) {
+
+    const status = document.getElementById("status");
+
+    status.className = "status erro";
+
+    status.innerText = mensagem;
+
+  }
+
+
+  function esconderStatus() {
+
+    const status = document.getElementById("status");
+
+    status.className = "status";
+
+    status.innerText = "";
+
+  }
+
+
+  /*
+   * Libera o botao de novo
+   */
+
+  function finalizar() {
+
+    enviando = false;
+
+    const botao = document.getElementById("enviar");
+
+    botao.disabled = false;
+
+    botao.innerText = "❤️ ENVIAR FOTOS";
+
+  }
+
+</script>
+
+</body>
+
+</html>
