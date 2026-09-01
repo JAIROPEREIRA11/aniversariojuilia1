@@ -5,20 +5,13 @@
 
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <meta
-    name="apple-mobile-web-app-capable"
-    content="yes"
-  >
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <title>Compartilhe suas fotos</title>
 
   <style>
-
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -48,12 +41,10 @@
         sans-serif;
 
       background:
-        linear-gradient(
-          135deg,
+        linear-gradient(135deg,
           #fce4ec 0%,
           #fff 50%,
-          #f3e5f5 100%
-        );
+          #f3e5f5 100%);
 
       display: flex;
       justify-content: center;
@@ -432,10 +423,7 @@
         border-radius: 22px;
 
         padding:
-          28px
-          18px
-          24px
-          18px;
+          28px 18px 24px 18px;
       }
 
       h1 {
@@ -497,7 +485,6 @@
         padding: 22px 10px;
       }
     }
-
   </style>
 </head>
 
@@ -543,14 +530,8 @@
         👤 Seu nome
       </label>
 
-      <input
-        type="text"
-        id="nome"
-        placeholder="Digite seu nome"
-        autocomplete="name"
-        autocapitalize="words"
-        spellcheck="false"
-      >
+      <input type="text" id="nome" placeholder="Digite seu nome" autocomplete="name" autocapitalize="words"
+        spellcheck="false">
 
     </div>
 
@@ -564,10 +545,7 @@
       </label>
 
 
-      <label
-        class="upload-label"
-        for="fotos"
-      >
+      <label class="upload-label" for="fotos">
 
         <div class="upload-icon">
           📷
@@ -585,32 +563,21 @@
         </div>
 
 
-        <div
-          class="contador"
-          id="contador"
-        >
+        <div class="contador" id="contador">
           Nenhuma foto selecionada
         </div>
 
       </label>
 
 
-      <input
-        type="file"
-        id="fotos"
-        accept="image/*"
-        multiple
-      >
+      <input type="file" id="fotos" accept="image/*" multiple>
 
     </div>
 
 
     <!-- BOTÃO -->
 
-    <button
-      id="enviar"
-      type="button"
-    >
+    <button id="enviar" type="button">
 
       ❤️ ENVIAR FOTOS
 
@@ -619,25 +586,16 @@
 
     <!-- PROGRESSO -->
 
-    <div
-      class="progresso-container"
-      id="progressoContainer"
-    >
+    <div class="progresso-container" id="progressoContainer">
 
-      <div
-        class="progresso-texto"
-        id="progressoTexto"
-      >
+      <div class="progresso-texto" id="progressoTexto">
         Preparando fotos...
       </div>
 
 
       <div class="progresso-fundo">
 
-        <div
-          class="progresso-barra"
-          id="progressoBarra"
-        ></div>
+        <div class="progresso-barra" id="progressoBarra"></div>
 
       </div>
 
@@ -646,10 +604,7 @@
 
     <!-- STATUS -->
 
-    <div
-      id="status"
-      class="status"
-    ></div>
+    <div id="status" class="status"></div>
 
 
     <div class="rodape">
@@ -662,438 +617,444 @@
   </div>
 
 
-<script>
+  <script>
 
-  /* ==========================================================
-   *  URL DA IMPLANTACAO DO APPS SCRIPT
-   * ========================================================== */
+    /* ==========================================================
+     *  URL DA IMPLANTACAO DO APPS SCRIPT
+     * ========================================================== */
 
-  const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxtLiJr-hRs0qx08elsppUK3qhdVIE2F6ZKGFveRZtwPA8yQ4v8zRFBu-P-1HeFfxhI3w/exec";
-
-
-  /*
-   * Configuracoes da compressao
-   */
-
-  const MAX_LADO = 1600;
-  const QUALIDADE = 0.8;
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxtLiJr-hRs0qx08elsppUK3qhdVIE2F6ZKGFveRZtwPA8yQ4v8zRFBu-P-1HeFfxhI3w/exec";
 
 
-  let arquivosSelecionados = [];
+    /*
+     * Configuracoes da compressao
+     */
 
-  let enviando = false;
-
-
-  /*
-   * Selecao das fotos
-   */
-
-  document
-    .getElementById("fotos")
-    .addEventListener("change", function (event) {
-
-      arquivosSelecionados =
-        Array.from(event.target.files);
-
-      const contador =
-        document.getElementById("contador");
+    const MAX_LADO = 1600;
+    const QUALIDADE = 0.8;
 
 
-      if (arquivosSelecionados.length === 0) {
+    let arquivosSelecionados = [];
 
-        contador.innerText =
-          "Nenhuma foto selecionada";
+    let enviando = false;
+    document.getElementById("nome").value = localStorage.getItem("nomeConvidado") || "";
 
-      } else {
+    window.addEventListener("beforeunload", function (evento) {
+      if (enviando) {
+        evento.preventDefault();
+        evento.returnValue = "";
+      }
+    });
+    /*
+     * Selecao das fotos
+     */
 
-        contador.innerText =
-          arquivosSelecionados.length +
-          (
-            arquivosSelecionados.length === 1
-              ? " foto selecionada"
-              : " fotos selecionadas"
+    document
+      .getElementById("fotos")
+      .addEventListener("change", function (event) {
+
+        arquivosSelecionados =
+          Array.from(event.target.files);
+
+        const contador =
+          document.getElementById("contador");
+
+
+        if (arquivosSelecionados.length === 0) {
+
+          contador.innerText =
+            "Nenhuma foto selecionada";
+
+        } else {
+
+          contador.innerText =
+            arquivosSelecionados.length +
+            (
+              arquivosSelecionados.length === 1
+                ? " foto selecionada"
+                : " fotos selecionadas"
+            );
+
+        }
+
+      });
+
+
+    document
+      .getElementById("enviar")
+      .addEventListener("click", enviar);
+
+
+    /*
+     * Reduz a foto no proprio celular antes de enviar
+     */
+
+    function comprimir(arquivo) {
+
+      return new Promise(function (resolve, reject) {
+
+        const url = URL.createObjectURL(arquivo);
+
+        const img = new Image();
+
+
+        img.onload = function () {
+
+          const escala =
+            Math.min(
+              1,
+              MAX_LADO / Math.max(img.width, img.height)
+            );
+
+          const canvas =
+            document.createElement("canvas");
+
+          canvas.width = Math.round(img.width * escala);
+          canvas.height = Math.round(img.height * escala);
+
+          canvas
+            .getContext("2d")
+            .drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          URL.revokeObjectURL(url);
+
+          resolve(
+            canvas.toDataURL("image/jpeg", QUALIDADE)
           );
 
+        };
+
+
+        img.onerror = function () {
+
+          URL.revokeObjectURL(url);
+
+          reject(
+            new Error("Nao foi possivel ler uma das fotos.")
+          );
+
+        };
+
+
+        img.src = url;
+
+      });
+
+    }
+
+
+    /*
+     * Manda UMA foto para o Apps Script usando x-www-form-urlencoded
+     * para evitar travamentos de CORS/redirecionamento do navegador no GitHub Pages.
+     */
+
+    function enviarUma(nome, dataUrl, nomeArquivo) {
+
+      return new Promise(function (resolve, reject) {
+
+        const id = "f_" + Math.random().toString(36).slice(2);
+
+        const iframe = document.createElement("iframe");
+        iframe.name = id;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+
+        const form = document.createElement("form");
+        form.action = URL_SCRIPT;
+        form.method = "POST";
+        form.target = id;
+        form.style.display = "none";
+
+        const campos = {nome: nome, dataUrl: dataUrl, nomeArquivo: nomeArquivo};
+
+        Object.keys(campos).forEach(function (chave) {
+          const input = document.createElement("textarea");
+          input.name = chave;
+          input.value = campos[chave];
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+
+        const tempo = setTimeout(function () {
+          limpar();
+          reject(new Error("Tempo esgotado no envio."));
+        }, 60000);
+
+        iframe.onload = function () {
+          clearTimeout(tempo);
+          limpar();
+          resolve({sucesso: true});
+        };
+
+        function limpar() {
+          form.remove();
+          setTimeout(function () {iframe.remove();}, 1000);
+        }
+
+        form.submit();
+
+      });
+
+    }
+
+
+    /*
+     * Envio principal
+     */
+
+    async function enviar() {
+
+      if (enviando) {
+        return;
       }
 
-    });
+
+      const nome =
+        document
+          .getElementById("nome")
+          .value
+          .trim();
 
 
-  document
-    .getElementById("enviar")
-    .addEventListener("click", enviar);
+      const botao =
+        document.getElementById("enviar");
 
 
-  /*
-   * Reduz a foto no proprio celular antes de enviar
-   */
-
-  function comprimir(arquivo) {
-
-    return new Promise(function (resolve, reject) {
-
-      const url = URL.createObjectURL(arquivo);
-
-      const img = new Image();
-
-
-      img.onload = function () {
-
-        const escala =
-          Math.min(
-            1,
-            MAX_LADO / Math.max(img.width, img.height)
-          );
-
-        const canvas =
-          document.createElement("canvas");
-
-        canvas.width = Math.round(img.width * escala);
-        canvas.height = Math.round(img.height * escala);
-
-        canvas
-          .getContext("2d")
-          .drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        URL.revokeObjectURL(url);
-
-        resolve(
-          canvas.toDataURL("image/jpeg", QUALIDADE)
-        );
-
-      };
-
-
-      img.onerror = function () {
-
-        URL.revokeObjectURL(url);
-
-        reject(
-          new Error("Nao foi possivel ler uma das fotos.")
-        );
-
-      };
-
-
-      img.src = url;
-
-    });
-
-  }
-
-
-  /*
-   * Manda UMA foto para o Apps Script usando x-www-form-urlencoded
-   * para evitar travamentos de CORS/redirecionamento do navegador no GitHub Pages.
-   */
-
- function enviarUma(nome, dataUrl, nomeArquivo) {
-
-  return new Promise(function (resolve, reject) {
-
-    const id = "f_" + Math.random().toString(36).slice(2);
-
-    const iframe = document.createElement("iframe");
-    iframe.name = id;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-
-    const form = document.createElement("form");
-    form.action = URL_SCRIPT;
-    form.method = "POST";
-    form.target = id;
-    form.style.display = "none";
-
-    const campos = { nome: nome, dataUrl: dataUrl, nomeArquivo: nomeArquivo };
-
-    Object.keys(campos).forEach(function (chave) {
-      const input = document.createElement("textarea");
-      input.name = chave;
-      input.value = campos[chave];
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-
-    const tempo = setTimeout(function () {
-      limpar();
-      reject(new Error("Tempo esgotado no envio."));
-    }, 60000);
-
-    iframe.onload = function () {
-      clearTimeout(tempo);
-      limpar();
-      resolve({ sucesso: true });
-    };
-
-    function limpar() {
-      form.remove();
-      setTimeout(function () { iframe.remove(); }, 1000);
-    }
-
-    form.submit();
-
-  });
-
-}
-
-
-  /*
-   * Envio principal
-   */
-
-  async function enviar() {
-
-    if (enviando) {
-      return;
-    }
-
-
-    const nome =
-      document
-        .getElementById("nome")
-        .value
-        .trim();
-
-
-    const botao =
-      document.getElementById("enviar");
-
-
-    if (URL_SCRIPT.indexOf("exec") === -1
+      if (URL_SCRIPT.indexOf("exec") === -1
         || URL_SCRIPT.indexOf("COLE_AQUI") === 0) {
 
-      mostrarErro(
-        "A pagina ainda nao foi configurada.\n\n" +
-        "Falta colar a URL do Apps Script no codigo."
-      );
-
-      return;
-    }
-
-
-    if (!nome) {
-
-      mostrarErro("Por favor, informe seu nome.");
-
-      document.getElementById("nome").focus();
-
-      return;
-    }
-
-
-    if (arquivosSelecionados.length === 0) {
-
-      mostrarErro("Selecione pelo menos uma foto.");
-
-      return;
-    }
-
-
-    enviando = true;
-
-    botao.disabled = true;
-
-    botao.innerText = "⏳ ENVIANDO...";
-
-    esconderStatus();
-
-    mostrarProgresso();
-
-
-    const total = arquivosSelecionados.length;
-
-    let enviadas = 0;
-
-
-    for (let i = 0; i < total; i++) {
-
-      try {
-
-        atualizarProgresso(
-          Math.round((i / total) * 100),
-          "Enviando foto " + (i + 1) + " de " + total + "..."
-        );
-
-
-        const dataUrl =
-          await comprimir(arquivosSelecionados[i]);
-
-
-        await enviarUma(
-          nome,
-          dataUrl,
-          arquivosSelecionados[i].name
-        );
-
-
-        enviadas++;
-
-      } catch (erro) {
-
         mostrarErro(
-          "Nao foi possivel enviar a foto " +
-          (i + 1) + " de " + total + ".\n\n" +
-          (erro && erro.message
-            ? erro.message
-            : "Verifique a internet e tente novamente.") +
-          (enviadas > 0
-            ? "\n\n" + enviadas + " ja foram salvas."
-            : "")
+          "A pagina ainda nao foi configurada.\n\n" +
+          "Falta colar a URL do Apps Script no codigo."
         );
-
-        finalizar();
 
         return;
       }
 
+
+      if (!nome) {
+
+        mostrarErro("Por favor, informe seu nome.");
+
+        document.getElementById("nome").focus();
+
+        return;
+      }
+      localStorage.setItem("nomeConvidado", nome);
+
+      if (arquivosSelecionados.length === 0) {
+
+        mostrarErro("Selecione pelo menos uma foto.");
+
+        return;
+      }
+
+
+      enviando = true;
+
+      botao.disabled = true;
+
+      botao.innerText = "⏳ ENVIANDO...";
+
+      esconderStatus();
+
+      mostrarProgresso();
+
+
+      const total = arquivosSelecionados.length;
+
+      let enviadas = 0;
+
+
+      for (let i = 0; i < total; i++) {
+
+        try {
+
+          atualizarProgresso(
+            Math.round((i / total) * 100),
+            "Enviando foto " + (i + 1) + " de " + total + "..."
+          );
+
+
+          const dataUrl =
+            await comprimir(arquivosSelecionados[i]);
+
+
+          await enviarUma(
+            nome,
+            dataUrl,
+            arquivosSelecionados[i].name
+          );
+
+
+          enviadas++;
+
+        } catch (erro) {
+
+          mostrarErro(
+            "Nao foi possivel enviar a foto " +
+            (i + 1) + " de " + total + ".\n\n" +
+            (erro && erro.message
+              ? erro.message
+              : "Verifique a internet e tente novamente.") +
+            (enviadas > 0
+              ? "\n\n" + enviadas + " ja foram salvas."
+              : "")
+          );
+
+          finalizar();
+
+          return;
+        }
+
+      }
+
+
+      atualizarProgresso(100, "Fotos enviadas!");
+
+
+      mostrarSucesso(
+
+        "🎉 Tudo certo, " + nome + "!\n\n" +
+
+        enviadas +
+        (
+          enviadas === 1
+            ? " foto foi enviada"
+            : " fotos foram enviadas"
+        ) +
+
+        " com sucesso. ❤️"
+
+      );
+
+
+      document.getElementById("nome").value = "";
+
+      document.getElementById("fotos").value = "";
+
+      document.getElementById("contador").innerText =
+        "Nenhuma foto selecionada";
+
+      arquivosSelecionados = [];
+
+
+      finalizar();
+
     }
 
 
-    atualizarProgresso(100, "Fotos enviadas!");
+    /*
+     * Progresso
+     */
 
+    function mostrarProgresso() {
 
-    mostrarSucesso(
+      document
+        .getElementById("progressoContainer")
+        .style.display = "block";
 
-      "🎉 Tudo certo, " + nome + "!\n\n" +
-
-      enviadas +
-      (
-        enviadas === 1
-          ? " foto foi enviada"
-          : " fotos foram enviadas"
-      ) +
-
-      " com sucesso. ❤️"
-
-    );
-
-
-    document.getElementById("nome").value = "";
-
-    document.getElementById("fotos").value = "";
-
-    document.getElementById("contador").innerText =
-      "Nenhuma foto selecionada";
-
-    arquivosSelecionados = [];
-
-
-    finalizar();
-
-  }
-
-
-  /*
-   * Progresso
-   */
-
-  function mostrarProgresso() {
-
-    document
-      .getElementById("progressoContainer")
-      .style.display = "block";
-
-  }
-
-
-  function atualizarProgresso(porcentagem, texto) {
-
-    document
-      .getElementById("progressoBarra")
-      .style.width = porcentagem + "%";
-
-    document
-      .getElementById("progressoTexto")
-      .innerText = texto;
-
-  }
-
-
-  /*
-   * Mensagens
-   */
-
-  function mostrarSucesso(mensagem) {
-
-    const status = document.getElementById("status");
-
-    status.className = "status sucesso";
-
-    status.innerText = mensagem;
-
-  }
-
-
-  function mostrarErro(mensagem) {
-
-    const status = document.getElementById("status");
-
-    status.className = "status erro";
-
-    status.innerText = mensagem;
-
-  }
-
-
-  function esconderStatus() {
-
-    const status = document.getElementById("status");
-
-    status.className = "status";
-
-    status.innerText = "";
-
-  }
-
-
-  /*
-   * Libera o botao de novo
-   */
-
-  function finalizar() {
-
-    enviando = false;
-
-    const botao = document.getElementById("enviar");
-
-    botao.disabled = false;
-
-    botao.innerText = "❤️ ENVIAR FOTOS";
-
-  }
-  function contarFotos(nome) {
-
-  return new Promise(function (resolve, reject) {
-
-    const cb = "cb_" + Math.random().toString(36).slice(2);
-    const script = document.createElement("script");
-
-    const tempo = setTimeout(function () {
-      limpar();
-      reject(new Error("Tempo esgotado."));
-    }, 15000);
-
-    function limpar() {
-      clearTimeout(tempo);
-      delete window[cb];
-      script.remove();
     }
 
-    window[cb] = function (dados) { limpar(); resolve(dados); };
-    script.onerror = function () { limpar(); reject(new Error("Falha.")); };
 
-    script.src = URL_SCRIPT +
-      "?nome=" + encodeURIComponent(nome) +
-      "&callback=" + cb;
+    function atualizarProgresso(porcentagem, texto) {
 
-    document.body.appendChild(script);
+      document
+        .getElementById("progressoBarra")
+        .style.width = porcentagem + "%";
 
-  });
+      document
+        .getElementById("progressoTexto")
+        .innerText = texto;
 
-}
+    }
 
-</script>
+
+    /*
+     * Mensagens
+     */
+
+    function mostrarSucesso(mensagem) {
+
+      const status = document.getElementById("status");
+
+      status.className = "status sucesso";
+
+      status.innerText = mensagem;
+
+    }
+
+
+    function mostrarErro(mensagem) {
+
+      const status = document.getElementById("status");
+
+      status.className = "status erro";
+
+      status.innerText = mensagem;
+
+    }
+
+
+    function esconderStatus() {
+
+      const status = document.getElementById("status");
+
+      status.className = "status";
+
+      status.innerText = "";
+
+    }
+
+
+    /*
+     * Libera o botao de novo
+     */
+
+    function finalizar() {
+
+      enviando = false;
+
+      const botao = document.getElementById("enviar");
+
+      botao.disabled = false;
+
+      botao.innerText = "❤️ ENVIAR FOTOS";
+
+    }
+    function contarFotos(nome) {
+
+      return new Promise(function (resolve, reject) {
+
+        const cb = "cb_" + Math.random().toString(36).slice(2);
+        const script = document.createElement("script");
+
+        const tempo = setTimeout(function () {
+          limpar();
+          reject(new Error("Tempo esgotado."));
+        }, 15000);
+
+        function limpar() {
+          clearTimeout(tempo);
+          delete window[cb];
+          script.remove();
+        }
+
+        window[cb] = function (dados) {limpar(); resolve(dados);};
+        script.onerror = function () {limpar(); reject(new Error("Falha."));};
+
+        script.src = URL_SCRIPT +
+          "?nome=" + encodeURIComponent(nome) +
+          "&callback=" + cb;
+
+        document.body.appendChild(script);
+
+      });
+
+    }
+
+  </script>
 
 </body>
 
