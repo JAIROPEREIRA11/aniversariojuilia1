@@ -1025,6 +1025,36 @@
     botao.innerText = "❤️ ENVIAR FOTOS";
 
   }
+  function contarFotos(nome) {
+
+  return new Promise(function (resolve, reject) {
+
+    const cb = "cb_" + Math.random().toString(36).slice(2);
+    const script = document.createElement("script");
+
+    const tempo = setTimeout(function () {
+      limpar();
+      reject(new Error("Tempo esgotado."));
+    }, 15000);
+
+    function limpar() {
+      clearTimeout(tempo);
+      delete window[cb];
+      script.remove();
+    }
+
+    window[cb] = function (dados) { limpar(); resolve(dados); };
+    script.onerror = function () { limpar(); reject(new Error("Falha.")); };
+
+    script.src = URL_SCRIPT +
+      "?nome=" + encodeURIComponent(nome) +
+      "&callback=" + cb;
+
+    document.body.appendChild(script);
+
+  });
+
+}
 
 </script>
 
