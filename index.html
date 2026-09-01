@@ -787,16 +787,53 @@
    * para evitar travamentos de CORS/redirecionamento do navegador no GitHub Pages.
    */
 
-  async function enviarUma(nome, dataUrl, nomeArquivo) {
+ function enviarUma(nome, dataUrl, nomeArquivo) {
 
-  await fetch(URL_SCRIPT, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ nome, dataUrl, nomeArquivo })
+  return new Promise(function (resolve, reject) {
+
+    const id = "f_" + Math.random().toString(36).slice(2);
+
+    const iframe = document.createElement("iframe");
+    iframe.name = id;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
+    const form = document.createElement("form");
+    form.action = URL_SCRIPT;
+    form.method = "POST";
+    form.target = id;
+    form.style.display = "none";
+
+    const campos = { nome: nome, dataUrl: dataUrl, nomeArquivo: nomeArquivo };
+
+    Object.keys(campos).forEach(function (chave) {
+      const input = document.createElement("textarea");
+      input.name = chave;
+      input.value = campos[chave];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+
+    const tempo = setTimeout(function () {
+      limpar();
+      reject(new Error("Tempo esgotado no envio."));
+    }, 60000);
+
+    iframe.onload = function () {
+      clearTimeout(tempo);
+      limpar();
+      resolve({ sucesso: true });
+    };
+
+    function limpar() {
+      form.remove();
+      setTimeout(function () { iframe.remove(); }, 1000);
+    }
+
+    form.submit();
+
   });
-
-  return { sucesso: true };
 
 }
 
